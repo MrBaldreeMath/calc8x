@@ -294,6 +294,11 @@ window.addEventListener('DOMContentLoaded', () => {
   // phones close web apps without beforeunload: save whenever the app goes to the background
   document.addEventListener('visibilitychange', () => { if (document.hidden) try { App.save(); } catch (e) { } });
   // phone/web version: keep working offline (the PC app loads from a file and does not need this)
-  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => { });
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    // a newer version took over: reload once so the phone shows it now, not on the next open
+    const had = !!navigator.serviceWorker.controller; let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (had && !reloaded) { reloaded = true; App.save(); location.reload(); } });
+    navigator.serviceWorker.register('sw.js').catch(() => { });
+  }
 });
 })();
