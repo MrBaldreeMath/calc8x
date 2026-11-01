@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Calc8X</title>
+<link rel="stylesheet" href="style.css">
+<!-- phone / web version: installable from the browser ("Add to Home Screen"), works offline through sw.js -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#16181b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Calc8X">
+</head>
+<body>
+<header class="bar">
+  <div class="brand"><span class="dot"></span>Calc8X</div>
+  <div class="tools">
+    <button id="projector" title="Bigger screen for the projector">Projector view</button>
+    <button id="histToggle" title="Show or hide the key press history">Key history</button>
+    <button id="shot" title="Save the calculator screen as a PNG">Save screen image</button>
+    <button id="progs" title="Load or save TI-84 programs (.8xp) and load background pictures">Files</button>
+  </div>
+</header>
+<main>
+  <section class="calc">
+    <div class="calcbody">
+      <div class="mini"><canvas id="screen" aria-label="Calculator screen"></canvas></div>
+      <div id="keypad" class="keypad"></div>
+    </div>
+  </section>
+  <div id="splitter" class="splitter" title="Drag to resize the keypad and screen (double-click to reset)"></div>
+  <section class="right">
+    <div class="display"><div class="bezel"><canvas id="screen2" aria-hidden="true"></canvas></div></div>
+    <div class="hist">
+      <div class="histhead"><span>Key Press History</span><span class="hbtns"><button id="clearHist">Clear</button><button id="histMin" title="Minimize the key history so the screen can grow">Minimize</button></span></div>
+      <div id="history" class="chips"></div>
+    </div>
+  </section>
+</main>
+<script src="numeric.js"></script>
+<script src="engine.js"></script>
+<script src="tifile.js"></script>
+<script src="cathelp.js"></script>
+<script src="ui-core.js"></script>
+<script src="ui-graph.js"></script>
+<script src="ui-stat.js"></script>
+<script src="ui-apps.js"></script>
+<script src="ui-prgm.js"></script>
+<script src="app-periodic.js"></script>
+<script src="app-scitools.js"></script>
+<script src="app-celsheet.js"></script>
+<script src="app-cabri.js"></script>
+<script src="ui-extra.js"></script>
+<div id="progPanel" class="panel" hidden>
+  <div class="panelbox">
+    <div class="panelhead"><span>Programs (.8xp files)</span><button id="progClose">Close</button></div>
+    <p class="panelnote">Load a TI-84 Plus CE program file, or save a program to send to a real calculator with TI Connect CE.</p>
+    <div class="panelrow"><button id="progLoad">Load .8xp file…</button><input id="progFile" type="file" accept=".8xp" multiple hidden></div>
+    <div id="progMsg" class="panelnote"></div>
+    <div id="progList"></div>
+    <div class="panelhead" style="margin-top:14px"><span>Background pictures (Image1–Image0)</span></div>
+    <p class="panelnote">Load a picture (PNG or JPG) into an Image slot, then choose it in FORMAT ▸ Background or run BackgroundOn Image1.</p>
+    <div class="panelrow"><select id="imgSlot"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>0</option></select><button id="imgLoad">Load picture…</button><button id="imgClear">Remove</button><input id="imgFile" type="file" accept="image/png,image/jpeg" hidden></div>
+    <div id="imgMsg" class="panelnote"></div>
+  </div>
+</div>
+<script src="ui-main.js"></script>
+<script src="mirror.js"></script>
+</body>
+</html>
