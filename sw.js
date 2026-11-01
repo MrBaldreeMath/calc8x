@@ -1,6 +1,6 @@
 /* sw.js — keeps the phone/web version working offline. `npm run web` stamps VERSION and the FILES list,
    so phones download the new files once after an update. Unstamped (VERSION 'dev') it asks the server first. */
-const VERSION = '202611010157';
+const VERSION = '202611010217';
 const FILES = ["./","app-cabri.js","app-celsheet.js","app-periodic.js","app-scitools.js","cathelp.js","engine.js","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","index.html","manifest.webmanifest","mirror.js","numeric.js","style.css","tifile.js","ui-apps.js","ui-core.js","ui-extra.js","ui-graph.js","ui-main.js","ui-prgm.js","ui-stat.js"];
 const CACHE = 'calc8x-' + VERSION;
 self.addEventListener('install', e => {

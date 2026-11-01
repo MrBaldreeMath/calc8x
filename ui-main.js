@@ -253,6 +253,22 @@ function splitter() {
   window.addEventListener('resize', () => { const v = parseInt(getComputedStyle(root).getPropertyValue('--calcW')); if (v) setW(v); });
 }
 
+/* ===================== FULL SCREEN ===================== */
+/* Android and PC browsers can go full screen; iPhone Safari cannot, but a home-screen app already fills the screen */
+function fullScreenButton() {
+  const b = document.getElementById('fullscreen'), d = document, root = d.documentElement;
+  const current = () => d.fullscreenElement || d.webkitFullscreenElement;
+  const can = !!(d.fullscreenEnabled || d.webkitFullscreenEnabled);
+  if (!can && (navigator.standalone || matchMedia('(display-mode: standalone)').matches)) { b.hidden = true; return; }
+  const label = () => { b.textContent = current() ? 'Exit full screen' : 'Full screen'; };
+  b.addEventListener('click', () => {
+    if (!can) { alert('To use the whole screen on iPhone: tap Share, then "Add to Home Screen", and open Calc8X from your home screen.'); return; }
+    if (current()) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+    else { const r = (root.requestFullscreen || root.webkitRequestFullscreen).call(root, { navigationUI: 'hide' }); if (r && r.catch) r.catch(() => { }); }
+  });
+  d.addEventListener('fullscreenchange', label); d.addEventListener('webkitfullscreenchange', label);
+}
+
 /* ===================== STARTUP ===================== */
 window.addEventListener('DOMContentLoaded', () => {
   App.load();
@@ -271,6 +287,7 @@ window.addEventListener('DOMContentLoaded', () => {
   try { setMin(localStorage.getItem('cgc-histmin') === '1'); } catch (e) { }
   histMin.addEventListener('click', () => { const on = !document.body.classList.contains('histmin'); setMin(on); try { localStorage.setItem('cgc-histmin', on ? '1' : '0'); } catch (e) { } });
   document.getElementById('shot').addEventListener('click', () => { document.getElementById('screen').toBlob(b => saveFile('calculator-screen.png', b), 'image/png'); });
+  fullScreenButton();
   document.getElementById('projector').addEventListener('click', () => { document.body.classList.toggle('projector'); });
   document.getElementById('histToggle').addEventListener('click', () => { document.body.classList.toggle('nohist'); });
   window.addEventListener('beforeunload', () => { try { App.save(); } catch (e) { } });
