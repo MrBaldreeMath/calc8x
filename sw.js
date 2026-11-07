@@ -1,22 +1,9 @@
-/* sw.js — keeps the phone/web version working offline. `npm run web` stamps VERSION and the FILES list,
-   so phones download the new files once after an update. Unstamped (VERSION 'dev') it asks the server first. */
-const VERSION = '202611010225';
-const FILES = ["./","app-cabri.js","app-celsheet.js","app-periodic.js","app-scitools.js","cathelp.js","engine.js","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","index.html","manifest.webmanifest","mirror.js","numeric.js","style.css","tifile.js","ui-apps.js","ui-core.js","ui-extra.js","ui-graph.js","ui-main.js","ui-prgm.js","ui-stat.js"];
-const CACHE = 'calc8x-' + VERSION;
-self.addEventListener('install', e => {
-  // cache: 'reload' skips the browser's own copy (GitHub Pages lets browsers reuse files for 10 minutes),
-  // otherwise a new version could be saved with the old files
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting()));
-});
+/* Calc8X moved to https://calc.hippasusmath.com/. This replaces the old offline copy on phones that installed the
+   github.io version: it deletes the saved files, removes itself and sends open pages to the new address. */
+self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
-});
-self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
-  const cached = () => caches.match(e.request, { ignoreSearch: true });
-  if (VERSION === 'dev') {
-    e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; }).catch(cached));
-    return;
-  }
-  e.respondWith(cached().then(r => r || fetch(e.request)));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.map(k => caches.delete(k))))
+    .then(() => self.registration.unregister())
+    .then(() => self.clients.matchAll({ type: 'window' }))
+    .then(cs => Promise.all(cs.map(c => c.navigate('https://calc.hippasusmath.com/').catch(() => { })))));
 });
